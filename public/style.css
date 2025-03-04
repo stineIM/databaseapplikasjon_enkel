@@ -1,0 +1,76 @@
+:root {
+    --primary-color: #121212;  /* Hovedbakgrunn (nesten svart) */
+    --secondary-color: #1b1b1b; /* Sekundær bakgrunn */
+    --nav-bg: #0f0f0f;  /* Mørk navbar */
+    --nav-hover: #222;  /* Mørkere hover-effekt */
+    --text-color: #e0e0e0;  /* Lys grå tekst */
+    --accent-color: #00ff88; /* Neon grønn for aksenter */
+    --input-bg: rgba(255, 255, 255, 0.1);  /* Diskret input bakgrunn */
+    --input-placeholder: rgba(255, 255, 255, 0.5); /* Input placeholder */
+    --button-primary: #14714c;  /* Neon grønn primærknapp */
+    --button-primary-hover: #0d9c60; /* Mørkere grønn hover */
+    --button-cancel: #444;  /* Mørk grå avbryt-knapp */
+    --button-cancel-hover: #333; /* Enda mørkere grå hover */
+    --favorite-color: #ff0044; /* Rødt hjerte */
+}
+
+body {
+    display: flex;
+    margin: 0; 
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    text-align: center;
+    min-height: 100vh;
+
+}
+
+.container {
+    background: rgba(255, 255, 255, 0.3);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    width: 100%;
+    max-width: 1200px;
+    margin-top: 20px; /* Flytter skjemaet ned */
+}
+
+/* Stil for navigasjonslenker */
+.navlinks {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    margin-right: 20px;
+}
+
+.navlinks li {
+    display: inline;
+}
+
+.navlinks a {
+    text-decoration: none;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-color);
+}
+
+
+.movie-card img {
+    max-width: 100%;
+}
+
+
+.movie-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsiv grid */
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.movie-card img {
+    max-width: 100%;
+}
