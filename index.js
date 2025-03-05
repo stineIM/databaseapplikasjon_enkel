@@ -4,6 +4,8 @@ import { open } from "sqlite";
 import sqlite3 from 'sqlite3'
 import bcrypt from 'bcrypt'
 
+
+// Opnar databasen database.db
 const dbPromise = open({
     filename: 'database.db',
     driver: sqlite3.Database
@@ -23,20 +25,23 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 
 
-// Routes will be added here
-
+// Startar ein express applikasjon, og gjer den port 3000 
 app.listen(port, () => {
     console.log(`Server er startet her: http://localhost:${port}`);
 });
 
+// Henter fila index.ejs 
 app.get('/', (req, res) => {
     res.render('index');
 });
 
-
+// Henter fila login.ejs
 app.get("/login", async (req, res) => {
     res.render("login");
 })
+
+// Vert kjørt når brukaren klikker "Registrer deg"
+// Denne ligg i action på <form> 
 
 app.post("/register", async (req, res) => {
     const db = await dbPromise;
@@ -56,6 +61,10 @@ app.post("/register", async (req, res) => {
 
 })
 
+// Denne vert kjørt når brukaren trykker "Logg inn", i fila login.ejs
+// Ref: <form action="/auth" method="post"> 
+// Denne sjekker om brukaren finnes i databasen, og om passord dei skriv inn er rett.
+
 app.post('/auth', async function (req, res) {
 
     const db = await dbPromise;
@@ -65,7 +74,7 @@ app.post('/auth', async function (req, res) {
 
     if (checkInDb === undefined) {
         res.status(400);
-        res.send("Invalid user" + getUserDetails);
+        res.send("Invalid user");
     } else {
         const isPasswordMatched = await bcrypt.compare(
             password,
@@ -74,16 +83,15 @@ app.post('/auth', async function (req, res) {
 
         if (isPasswordMatched) {
             res.status(200);
-            if (checkInDb.role == 1) { // ADMIN SYSTEM
+            if (checkInDb.role == 1) { // Sjekker om brukaren er admin. Admin = 1
                 req.session.admin = true;
 
             }
-            // If the account exists
-            // Authenticate the user
+            // Dersom brukaren finnes, logg inn
             req.session.loggedin = true;
             req.session.email = email;
             req.session.userid = checkInDb.id;
-            // Redirect to home page
+            // Redirect til heimesida
             res.redirect('/home');
         } else {
             res.status(400);
@@ -95,21 +103,15 @@ app.post('/auth', async function (req, res) {
 
 });
 
+// Henter fila home.ejs (heimesida)
 app.get("/home", async (req, res) => {
     const db = await dbPromise;
     const admin = req.session.admin;
-    const user_id = req.session.userid || 0; // Hvis ikke innlogget, sett user_id til 0
 
     // Hent topp 10 filmer
     const movies = await db.all("SELECT * FROM top_10_movies ORDER BY rating DESC LIMIT 10");
 
-    // Hent favorittfilmer for den innloggede brukeren
-    const favoriteMovies = await db.all("SELECT movie_id FROM favorites WHERE user_id = ?", [user_id]);
-    
-    // Lag en liste over favoritt-filmer
-    const favoriteMovieIds = favoriteMovies.map(fav => fav.movie_id);
-
-    res.render("home", { admin, movies, favoriteMovieIds });
+    res.render("home", { admin, movies });
 });
 
 app.get("/logout", async (req, res) => {
@@ -135,14 +137,7 @@ app.get('/profile', async function (req, res) {
         } else {
             res.status(200);
             // Hent filmer som er favoritter for denne brukeren
-            const favorites = await db.all(`
-                SELECT m.* FROM top_10_movies m
-                JOIN favorites f ON m.id = f.movie_id
-                WHERE f.user_id = ?
-                ORDER BY rating DESC LIMIT 3`, [userid]);
-
-
-            res.render('profile', { userid, user, admin, favorites });
+            res.render('profile', { userid, user, admin });
         }
     }
     else {
@@ -193,7 +188,9 @@ app.get('/profile/edit', async function (req, res) {
     res.render('edit', { user, admin });
 });
 
-app.post('/profile/edit', async function (req, res) {
+app.post('/profile/edit/:id', async function (req, res) {
+    const id = req.params.id;  // Henter ID fra URL-parameteren.
+
     if (!req.session.loggedin) {
         return res.render("errors/403");
     }
@@ -219,7 +216,7 @@ app.post('/profile/edit', async function (req, res) {
     }
 });
 
-// ADMIN SYSTEM
+// ADMIN SYSTEM - opner admin.ejs
 app.get('/admin', async function (req, res) {
     if (req.session.loggedin) {
         const user = req.session.email;
