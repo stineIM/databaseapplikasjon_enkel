@@ -142,7 +142,7 @@ app.get('/profile', async function (req, res) {
         }
     }
     else {
-        return res.render("errors/403");
+        return res.render(403);
     }
 });
 
@@ -191,7 +191,7 @@ app.post('/profile/edit/:id', async function (req, res) {
 
     // Sjekker om brukaren er logga inn, hvis ikkje - vart den sendt til fila 403.ejs i mappa errors
     if (!req.session.loggedin) {
-        return res.render("errors/403");
+        return res.render(403);
     }
 
     const db = await dbPromise;
