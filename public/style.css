@@ -22,7 +22,7 @@ body {
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     text-align: center;
     min-height: 100vh;
-
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .container {
