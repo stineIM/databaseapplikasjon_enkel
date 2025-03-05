@@ -1,5 +1,5 @@
 :root {
-    --primary-color: #121212;  /* Hovedbakgrunn (nesten svart) */
+    --primary-color: #5d6d5d;  /* Hovedbakgrunn (nesten svart) */
     --secondary-color: #1b1b1b; /* Sekundær bakgrunn */
     --nav-bg: #0f0f0f;  /* Mørk navbar */
     --nav-hover: #222;  /* Mørkere hover-effekt */
@@ -61,6 +61,7 @@ body {
 
 .movie-card img {
     max-width: 100%;
+    border-radius: 10px;
 }
 
 
@@ -69,8 +70,4 @@ body {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsiv grid */
     gap: 20px;
     margin-top: 20px;
-}
-
-.movie-card img {
-    max-width: 100%;
 }
