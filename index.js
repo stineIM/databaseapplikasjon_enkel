@@ -167,26 +167,6 @@ app.post('/profile/delete/:id', async (req, res) => {
     }
 });
 
-// ADMIN SYSTEM
-app.get('/admin', async function (req, res) {
-    if (req.session.loggedin) {
-        const user = req.session.email;
-        const db = await dbPromise;
-        let getUserDetails = `SELECT * FROM users WHERE email = '${user}' AND role = 1`;
-        let checkInDb = await db.get(getUserDetails);
-        const query = 'SELECT * FROM users';
-        const users = await db.all(query);
-
-        if (checkInDb === undefined) {
-            res.status(400);
-            res.send("Invalid user");
-        } else {
-            let admin = true;
-            res.status(200);
-            res.render('admin', { user, admin, users });
-        }
-    }
-});
 
 // Bruker kan redigere sin egen profil
 app.get('/profile/edit', async function (req, res) {
@@ -236,6 +216,27 @@ app.post('/profile/edit', async function (req, res) {
     } catch (error) {
         console.error('Feil ved oppdatering:', error);
         res.status(500).send("Kunne ikke oppdatere profilen.");
+    }
+});
+
+// ADMIN SYSTEM
+app.get('/admin', async function (req, res) {
+    if (req.session.loggedin) {
+        const user = req.session.email;
+        const db = await dbPromise;
+        let getUserDetails = `SELECT * FROM users WHERE email = '${user}' AND role = 1`;
+        let checkInDb = await db.get(getUserDetails);
+        const query = 'SELECT * FROM users';
+        const users = await db.all(query);
+
+        if (checkInDb === undefined) {
+            res.status(400);
+            res.send("Invalid user");
+        } else {
+            let admin = true;
+            res.status(200);
+            res.render('admin', { user, admin, users });
+        }
     }
 });
 
