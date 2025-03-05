@@ -50,8 +50,6 @@ app.post("/register", async (req, res) => {
     const db = await dbPromise;
     const { fname, lname, email, password, confirmPassword } = req.body;
 
-    console.log(fname, lname, email, password, confirmPassword);
-
     if (password != confirmPassword) {
         res.render("register", { error: "Password must match." })
         return;
@@ -172,12 +170,9 @@ app.get('/profile/edit', async function (req, res) {
     const db = await dbPromise;
     const loggedInUserId = req.session.userid; // Henter ID-en til den innloggede brukeren
 
-    if (!req.session.loggedin || !admin) {
-        return res.render("errors/403");
-    }
 
     // Sørger for at en vanlig bruker kun kan redigere sin egen profil
-    if (!loggedInUserId || !admin) {
+    if (!loggedInUserId) {
         return res.status(403).send("Du har ikke tilgang til å redigere denne profilen.");
     }
 
@@ -204,8 +199,8 @@ app.post('/profile/edit/:id', async function (req, res) {
     const admin = req.session.admin; // finner ut om brukaren som er logga inn er admin
 
     // Sjekker om brukaren som prøver å redigere profilen, er den same som er logga inn, eller om admin
-    if (parseInt(id) !== loggedInUserId || !admin) {
-        return res.render("errors/403");
+    if (parseInt(id) !== loggedInUserId) {
+        return res.render(403);
     }
 
     // henter ut firstname og lastname frå <form> i edit.ejs 
@@ -216,10 +211,10 @@ app.post('/profile/edit/:id', async function (req, res) {
 
     try {
         await db.run(query, [firstname, lastname, loggedInUserId]); // kjører SQL spørringen
-        console.log(`Profil oppdatert for bruker-ID: ${loggedInUserId}`);
+        //console.log(`Profil oppdatert for bruker-ID: ${loggedInUserId}`);
         res.redirect('/profile'); // Tilbake til profilsiden
     } catch (error) {
-        console.error('Feil ved oppdatering:', error);
+        //console.error('Feil ved oppdatering:', error);
         res.status(500).send("Kunne ikke oppdatere profilen.");
     }
 });
@@ -254,10 +249,10 @@ app.post('/admin/delete/:id', async (req, res) => {
 
     try {
         await db.run(query, id); // Utfører sletting av brukeren fra databasen.
-        console.log('Deleted user with ID:', id); // Logger ID-en til brukeren som ble slettet.
+        //console.log('Deleted user with ID:', id); // Logger ID-en til brukeren som ble slettet.
         res.redirect('/admin');  // Omdirigerer tilbake til admin-siden etter sletting.
     } catch (error) {
-        console.error('Error when deleting:', error); // Logger eventuelle feil under sletting.
+        //console.error('Error when deleting:', error); // Logger eventuelle feil under sletting.
         res.status(500).send("Unable to delete user.");  // Sender feilmelding hvis sletting feiler.
     }
 });
