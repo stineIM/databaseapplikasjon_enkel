@@ -4,6 +4,9 @@ import { open } from "sqlite";
 import sqlite3 from 'sqlite3'
 import bcrypt from 'bcrypt'
 
+// BRUKERNAVN OG PASSORD TIL ADMIN-BRUKER: 
+// admin@test.no
+// 123456
 
 // Opnar databasen database.db
 const dbPromise = open({
@@ -191,23 +194,28 @@ app.get('/profile/edit', async function (req, res) {
 app.post('/profile/edit/:id', async function (req, res) {
     const id = req.params.id;  // Henter ID fra URL-parameteren.
 
+    // Sjekker om brukaren er logga inn, hvis ikkje - vart den sendt til fila 403.ejs i mappa errors
     if (!req.session.loggedin) {
         return res.render("errors/403");
     }
 
     const db = await dbPromise;
-    const loggedInUserId = req.session.userid;
-    const admin = req.session.admin;
+    const loggedInUserId = req.session.userid; // finner userid til innlogga brukar
+    const admin = req.session.admin; // finner ut om brukaren som er logga inn er admin
 
+    // Sjekker om brukaren som prøver å redigere profilen, er den same som er logga inn, eller om admin
     if (parseInt(id) !== loggedInUserId || !admin) {
         return res.render("errors/403");
     }
 
-    const { firstname, lastname } = req.body; // E-post fjernet
+    // henter ut firstname og lastname frå <form> i edit.ejs 
+    // desse er "name" i <input> feltet, og må skrives på same måte 
+    const { firstname, lastname } = req.body; 
 
     const query = "UPDATE users SET firstname = ?, lastname = ? WHERE id = ?";
+
     try {
-        await db.run(query, [firstname, lastname, loggedInUserId]);
+        await db.run(query, [firstname, lastname, loggedInUserId]); // kjører SQL spørringen
         console.log(`Profil oppdatert for bruker-ID: ${loggedInUserId}`);
         res.redirect('/profile'); // Tilbake til profilsiden
     } catch (error) {
@@ -224,7 +232,7 @@ app.get('/admin', async function (req, res) {
         let getUserDetails = `SELECT * FROM users WHERE email = '${user}' AND role = 1`;
         let checkInDb = await db.get(getUserDetails);
         const query = 'SELECT * FROM users';
-        const users = await db.all(query);
+        const users = await db.all(query); // kjører SQL spørringen
 
         if (checkInDb === undefined) {
             res.status(400);
