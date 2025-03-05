@@ -15,6 +15,29 @@
  <li>Kommando: node index.js</li>
 </ul>
 
+<h2>Mappa views</h2>
+<p>I denne mappa finner du .ejs filer. Det er html-filer med ejs (Embedded JavaScript)</p>
+<p>Det er her me endrer på utsjånaden på filene, slik som me er vant med.</p>
+
+<h2>index.js</h2>
+<p>Denne fila inneheld all koden for å hente inn og vise informasjon frå databasen. </p>
+<p>Den lagar også routing, navigering, mellom dei ulike sidene. </p>
+
+<h3><b>GET</b> vs <b>POST</b> i index.js i Express.js</h3>
+<b>GET (Henter data)</b>
+<ul>
+ <li> Denne bruker me når me skal hente informasjon frå serveren.</li>
+ <li>Ingen sensitiv informasjon sendes i body – berre via URL.</li>
+ <li>Eksempel: Hente ein brukarprofil, eller ei nettside. </li>
+</li>
+</ul>
+<b>POST (sender/skriver data )</b>
+<ul>
+ <li>Denne bruker me når me skal sende data til serveren (f.eks. lagre eller oppdatere noko i databasen).</li>
+ <li>Data vert sendt i request body, ikkje i URL-en – sikrare for sensitiv info (f.eks. passord).</li>
+ <li>Eksempel: Når ein brukar logger inn.</li>
+</ul>
+
 
 <h2>Styling:</h2> 
 
